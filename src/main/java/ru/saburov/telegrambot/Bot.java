@@ -10,8 +10,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class Bot extends TelegramLongPollingBot {
 
-    private static final Logger log = Logger.getLogger(Bot.class);
-
     private final String BOT_NAME;
     private final String BOT_TOKEN;
 
