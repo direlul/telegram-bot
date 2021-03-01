@@ -2,7 +2,6 @@ package ru.saburov.telegrambot;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -49,9 +48,10 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        long chatId = update.getMessage().getChatId();
+        Long chatId = update.getMessage().getChatId();
 
         if (!chats.contains(String.valueOf(chatId))) {
+            saveChatInJson(String.valueOf(chatId));
             SendMessage message = new SendMessage();
             message.setChatId(String.valueOf(chatId));
             message.setText("Привет, запомнил тебя.");
@@ -64,7 +64,21 @@ public class Bot extends TelegramLongPollingBot {
 
     }
 
-    public void writeChatInJson(String chatId) {
+    public void notifyAboutNewChapters(String msg) {
+        for (String chatId : chats) {
+            SendMessage message = new SendMessage();
+            message.setChatId(chatId);
+            message.setText(msg);
+
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void saveChatInJson(String chatId) {
         HashSet<String> chats = readChatsFromJson();
         chats.add(chatId);
 
@@ -77,7 +91,8 @@ public class Bot extends TelegramLongPollingBot {
 
     public HashSet<String> readChatsFromJson() {
         try {
-            List<String> li = objectMapper.readValue(file, new TypeReference<List<String>>(){});
+            List<String> li = objectMapper.readValue(file, new TypeReference<>() {
+            });
             return new HashSet<>(li);
         } catch (IOException e) {
             System.out.println("Json пустой");
