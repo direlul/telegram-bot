@@ -35,12 +35,13 @@ public class BotApplication {
                     String msg = "Вышли новые главы: " + String.join(", ", chapterList);
                     bot.notifyAboutNewChapters(msg);
                 } else {
-                    bot.notifyAboutNewChapters("нет(тест)");
+                    String test = bot.getChats().toString();
+                    bot.notifyAboutNewChapters(test);
                 }
             }
         };
 
-        myTimer.scheduleAtFixedRate(checkChapters , 0L, 4 * (60*1000));
+        myTimer.scheduleAtFixedRate(checkChapters , 0L, 2 * (60*1000));
 
     }
 
