@@ -79,7 +79,6 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public void saveChatInJson(String chatId) {
-        HashSet<String> chats = readChatsFromJson();
         chats.add(chatId);
 
         try {
