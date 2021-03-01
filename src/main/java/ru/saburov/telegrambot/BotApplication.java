@@ -34,14 +34,11 @@ public class BotApplication {
                 if (!chapterList.isEmpty()) {
                     String msg = "Вышли новые главы: " + String.join(", ", chapterList);
                     bot.notifyAboutNewChapters(msg);
-                } else {
-                    String test = bot.getChats().toString();
-                    bot.notifyAboutNewChapters(test);
                 }
             }
         };
 
-        myTimer.scheduleAtFixedRate(checkChapters , 0L, 2 * (60*1000));
+        myTimer.scheduleAtFixedRate(checkChapters , 0L, 20 * (60*1000));
 
     }
 
