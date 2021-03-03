@@ -66,7 +66,7 @@ public class DAO {
             PreparedStatement statement = con.prepareStatement("select url from url where id = 1");
 
             ResultSet rs = statement.executeQuery();
-
+            rs.next();
             return rs.getString("url");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
