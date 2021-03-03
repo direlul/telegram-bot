@@ -5,12 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DAO {
+    private static final String URL = "jdbc:postgresql://ec2-54-166-242-77.compute-1.amazonaws.com:5432/d5a97t3jlkoh62";
+    private static final String USERNAME = "cmipkqfmagyuzo";
+    private static final String PASSWORD = "d7dd3467c26c0d7cc95d86d7c92249753c4ad6e468bded552f6e4b349bd9da4c";
+
     private static Connection con;
 
     static {
         try {
             con = DriverManager.
-                    getConnection("postgres://cmipkqfmagyuzo:d7dd3467c26c0d7cc95d86d7c92249753c4ad6e468bded552f6e4b349bd9da4c@ec2-54-166-242-77.compute-1.amazonaws.com:5432/d5a97t3jlkoh62");
+                    getConnection(URL, USERNAME, PASSWORD);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
