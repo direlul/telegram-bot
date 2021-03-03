@@ -12,14 +12,14 @@ import java.util.List;
 
 @Data
 public class Parser {
-    private final String PATH_FILE = "src/main/resources/current_url";
 
+    private DAO dao;
     private String currentUrl;
-    private File file;
 
-    public Parser() {
-        file = new File(PATH_FILE);
-        currentUrl = readUrlFromFile();
+    public Parser(DAO dao) {
+        this.dao = dao;
+        currentUrl = dao.getCurrentUrl();
+
     }
 
     public String scanNextChapter() {
@@ -29,7 +29,7 @@ public class Parser {
             if (el != null) {
                 String nextChapterUrl = el.attr("href");
                 currentUrl = nextChapterUrl;
-                writeNewUrl(nextChapterUrl);
+                dao.updateCurrentUrl(nextChapterUrl);
 
                 return nextChapterUrl;
             }
@@ -49,23 +49,5 @@ public class Parser {
         }
 
         return newChapters;
-    }
-
-    public String readUrlFromFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            return reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public void writeNewUrl(String newUrl) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write(newUrl);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

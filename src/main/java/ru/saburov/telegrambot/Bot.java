@@ -9,10 +9,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -21,19 +17,16 @@ public class Bot extends TelegramLongPollingBot {
 
     private final String BOT_NAME;
     private final String BOT_TOKEN;
-    private final String CHATS_PATH = "src/main/resources/chats.json";
+    private final DAO dao;
 
-    private ObjectMapper objectMapper;
-    private File file;
-    private HashSet<String> chats;
+    private List<String> chats;
 
-    public Bot(String botName, String botToken) {
+    public Bot(String botName, String botToken, DAO dao) {
         super();
+        this.dao = dao;
         this.BOT_NAME = botName;
         this.BOT_TOKEN = botToken;
-        this.objectMapper = new ObjectMapper();
-        this.file = new File(CHATS_PATH);
-        this.chats = readChatsFromJson();
+        this.chats = dao.readChats();
     }
 
     @Override
@@ -51,7 +44,8 @@ public class Bot extends TelegramLongPollingBot {
         Long chatId = update.getMessage().getChatId();
 
         if (!chats.contains(String.valueOf(chatId))) {
-            saveChatInJson(String.valueOf(chatId));
+            dao.saveChat(String.valueOf(chatId));
+            this.chats = dao.readChats();
             SendMessage message = new SendMessage();
             message.setChatId(String.valueOf(chatId));
             message.setText("Привет, запомнил тебя.");
@@ -76,28 +70,6 @@ public class Bot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void saveChatInJson(String chatId) {
-        chats.add(chatId);
-
-        try {
-            objectMapper.writeValue(file, new ArrayList<>(chats));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public HashSet<String> readChatsFromJson() {
-        try {
-            List<String> li = objectMapper.readValue(file, new TypeReference<>() {
-            });
-            return new HashSet<>(li);
-        } catch (IOException e) {
-            System.out.println("Json пустой");
-        }
-
-        return new HashSet<>();
     }
 
 }

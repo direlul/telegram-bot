@@ -12,11 +12,11 @@ import java.util.TimerTask;
 public class BotApplication {
 
     private static final Map<String, String> getenv = System.getenv();
-    private static final Parser parser = new Parser();
-
+    private static final DAO dao = new DAO();
+    private static final Parser parser = new Parser(dao);
 
     public static void main(String[] args) {
-        Bot bot = new Bot(getenv.get("BOT_NAME"), getenv.get("BOT_TOKEN"));
+        Bot bot = new Bot(getenv.get("BOT_NAME"), getenv.get("BOT_TOKEN"), dao);
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(bot);
@@ -29,18 +29,17 @@ public class BotApplication {
         TimerTask checkChapters = new TimerTask() {
             @Override
             public void run () {
-                List<String> chapterList = parser.checkNewChapters();
-                bot.readChatsFromJson();
+            List<String> chapterList = parser.checkNewChapters();
 
-                if (!chapterList.isEmpty()) {
-                    String msg = "Вышли новые главы: " + String.join(", ", chapterList);
-                    bot.notifyAboutNewChapters(msg);
+            if (!chapterList.isEmpty()) {
+                String msg = "Вышли новые главы: " + String.join(", ", chapterList);
+                bot.notifyAboutNewChapters(msg);
 
-                }
+            }
             }
         };
 
-        myTimer.scheduleAtFixedRate(checkChapters , 0L, 20 * (60*1000));
+        myTimer.scheduleAtFixedRate(checkChapters , 0L, 10 * (60*1000));
 
     }
 
