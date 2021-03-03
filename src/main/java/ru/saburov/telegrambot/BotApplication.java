@@ -34,6 +34,7 @@ public class BotApplication {
                 if (!chapterList.isEmpty()) {
                     String msg = "Вышли новые главы: " + String.join(", ", chapterList);
                     bot.notifyAboutNewChapters(msg);
+                    bot.readChatsFromJson();
                 }
             }
         };
