@@ -1,5 +1,6 @@
 package ru.saburov.telegrambot;
 
+import lombok.SneakyThrows;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -27,14 +28,18 @@ public class BotApplication {
 
         Timer myTimer = new Timer();
         TimerTask checkChapters = new TimerTask() {
+            @SneakyThrows
             @Override
             public void run () {
+            if (dao.getCon().isClosed()) {
+                dao.newConnection();
+            }
+
             List<String> chapterList = parser.checkNewChapters();
 
-            if (!chapterList.isEmpty()) {
+            if (chapterList != null && !chapterList.isEmpty()) {
                 String msg = "Вышли новые главы: " + String.join(", ", chapterList);
                 bot.notifyAboutNewChapters(msg);
-
             }
             }
         };

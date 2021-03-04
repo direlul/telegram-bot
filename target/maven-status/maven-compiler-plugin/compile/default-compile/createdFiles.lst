@@ -1,2 +1,5 @@
 ru\saburov\telegrambot\Bot.class
+ru\saburov\telegrambot\DAO.class
+ru\saburov\telegrambot\BotApplication$1.class
 ru\saburov\telegrambot\BotApplication.class
+ru\saburov\telegrambot\Parser.class

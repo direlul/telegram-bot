@@ -11,7 +11,15 @@ public class DAO {
 
     private static Connection con;
 
-    static {
+    public DAO() {
+        newConnection();
+    }
+
+    public static Connection getCon() {
+        return con;
+    }
+
+    public void newConnection() {
         try {
             con = DriverManager.
                     getConnection(URL, USERNAME, PASSWORD);
